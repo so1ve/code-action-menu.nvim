@@ -1,0 +1,96 @@
+# code-action-menu.nvim
+
+A small Neovim LSP code action picker
+
+## Features
+
+- `require("code-action-menu").setup(opts)` and `require("code-action-menu").code_action(opts)`
+- Picker fallback order: `snacks` → `mini` → `native`
+- Only shows code actions that are available; disabled actions are hidden
+- Rows include kind-colored action icons and dimmed LSP client/source names
+- Supports diff preview for Snacks picker only
+
+## Dependencies
+
+- Neovim >= 0.10
+- Optional: [`folke/snacks.nvim`](https://github.com/folke/snacks.nvim) for the Snacks picker and diff preview
+- Optional: [`nvim-mini/mini.pick`](https://github.com/nvim-mini/mini.pick) for the mini.pick picker
+- No extra dependency is required for the native `vim.ui.select` fallback
+- Strongly recommended: a Nerd Font, because the default action icons use Nerd Font glyphs
+
+## Installation
+
+### `lazy.nvim`
+
+```lua
+{
+  "so1ve/code-action-menu.nvim",
+  event = "LspAttach",
+  opts = {},
+}
+```
+
+Then map it from your LSP attach logic:
+
+```lua
+vim.keymap.set("n", "<leader>ca", function()
+  require("code-action-menu").code_action()
+end, { buffer = bufnr, desc = "Code action" })
+```
+
+## Configuration
+
+```lua
+require("code-action-menu").setup({
+  -- accepts both a string or a list of strings to specify the picker(s) to use
+  picker = { "snacks", "mini", "native" },
+  -- notify via `vim.notify`?
+  notify = true,
+  icons = {
+    quickfix = "󰁨",
+    refactor = "󰊕",
+    extract = "󰈌",
+    inline = "󰏖",
+    rewrite = "󰷈",
+    source = "󰒓",
+    organize_imports = "󰉕",
+    fallback = "󰌵",
+  },
+})
+```
+
+`code_action()` accepts the same options for one call. It also accepts `bufnr`, `context`, and `only`:
+
+```lua
+require("code-action-menu").code_action({ only = "source.organizeImports" })
+```
+
+## Highlights
+
+Action rows use default highlight links, so colors follow your colorscheme:
+
+- `CodeActionMenuQuickfix`
+- `CodeActionMenuRefactor`
+- `CodeActionMenuExtract`
+- `CodeActionMenuInline`
+- `CodeActionMenuRewrite`
+- `CodeActionMenuSource`
+- `CodeActionMenuOrganizeImports`
+- `CodeActionMenuFallback`
+- `CodeActionMenuClient`
+
+Override them with `vim.api.nvim_set_hl()` if you want a different palette.
+
+## Pickers
+
+### Snacks
+
+Uses `snacks.picker` when available. This is the only picker with preview support; it shows action diff/details.
+
+### mini.pick
+
+Uses `require("mini.pick").start()` when available. Preview is not supported.
+
+### native
+
+Uses `vim.ui.select` as the final fallback. Preview is not supported.
