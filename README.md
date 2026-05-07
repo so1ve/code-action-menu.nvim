@@ -7,7 +7,6 @@ A small Neovim LSP code action picker
 - `require("code-action-menu").setup(opts)` and `require("code-action-menu").code_action(opts)`
 - Picker fallback order: `snacks` → `mini` → `native`
 - Only shows code actions that are available; disabled actions are hidden
-- Rows include kind-colored action icons and dimmed LSP client/source names
 - Supports diff preview for Snacks picker only
 
 ## Dependencies
@@ -15,7 +14,6 @@ A small Neovim LSP code action picker
 - Neovim >= 0.10
 - Optional: [`folke/snacks.nvim`](https://github.com/folke/snacks.nvim) for the Snacks picker and diff preview
 - Optional: [`nvim-mini/mini.pick`](https://github.com/nvim-mini/mini.pick) for the mini.pick picker
-- No extra dependency is required for the native `vim.ui.select` fallback
 - Strongly recommended: a Nerd Font, because the default action icons use Nerd Font glyphs
 
 ## Installation
@@ -46,6 +44,8 @@ require("code-action-menu").setup({
   picker = { "snacks", "mini", "native" },
   -- notify via `vim.notify`?
   notify = true,
+  -- menu prompt shown in the picker header
+  prompt = "Code Actions",
   icons = {
     quickfix = "󰁨",
     refactor = "󰊕",
@@ -78,8 +78,6 @@ Action rows use default highlight links, so colors follow your colorscheme:
 - `CodeActionMenuOrganizeImports`
 - `CodeActionMenuFallback`
 - `CodeActionMenuClient`
-
-Override them with `vim.api.nvim_set_hl()` if you want a different palette.
 
 ## Pickers
 
