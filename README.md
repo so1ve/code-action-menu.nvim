@@ -9,7 +9,7 @@ A small Neovim LSP code action picker
 - Only shows code actions that are available; disabled actions are hidden
 - Supports diff preview for Snacks picker only
 
-## Dependencies
+## Requirements
 
 - Neovim >= 0.10
 - Optional: [`folke/snacks.nvim`](https://github.com/folke/snacks.nvim) for the Snacks picker and diff preview
