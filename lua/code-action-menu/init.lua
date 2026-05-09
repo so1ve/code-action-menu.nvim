@@ -13,6 +13,10 @@ function M.setup(opts)
   return options
 end
 
+function M.capabilities(capabilities)
+  return lsp.capabilities(capabilities)
+end
+
 function M.code_action(opts)
   highlights.setup()
   opts = vim.tbl_deep_extend("force", config.get(), opts or {})

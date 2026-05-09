@@ -53,4 +53,75 @@ function M.from_action(action, client, bufnr)
   }
 end
 
+local function group_name(item)
+  local group = item.action and item.action.group
+
+  return type(group) == "string" and group ~= "" and group or nil
+end
+
+local function group_key(item, name)
+  local client = item.client
+
+  if client and client.id then
+    return string.format("%s:%s", client.id, name)
+  end
+
+  return string.format("%s:%s", tostring(client or item.client_name or ""), name)
+end
+
+local function group_item(name, children)
+  local first = children[1]
+
+  return {
+    is_group = true,
+    children = children,
+    client = first.client,
+    client_name = first.client_name,
+    bufnr = first.bufnr,
+    icon = first.icon,
+    icon_hl = first.icon_hl,
+    kind = first.kind,
+    source_hl = first.source_hl,
+    source_text = first.source_text,
+    title = name,
+    title_hl = first.title_hl,
+    title_text = string.format("%s %s", first.icon, name),
+  }
+end
+
+function M.group(action_items)
+  local groups = {}
+  local ordered = {}
+
+  for _, item in ipairs(action_items) do
+    local name = group_name(item)
+
+    if name then
+      local key = group_key(item, name)
+
+      if not groups[key] then
+        groups[key] = {}
+        ordered[#ordered + 1] = { group = name, key = key }
+      end
+
+      groups[key][#groups[key] + 1] = item
+    else
+      ordered[#ordered + 1] = { item = item }
+    end
+  end
+
+  local result = {}
+  for _, entry in ipairs(ordered) do
+    if entry.item then
+      result[#result + 1] = entry.item
+    else
+      local children = groups[entry.key]
+
+      result[#result + 1] = #children == 1 and children[1] or group_item(entry.group, children)
+    end
+  end
+
+  return result
+end
+
 return M

@@ -72,7 +72,7 @@ function M.collect(opts, callback)
 
     pending = pending - 1
     if pending == 0 then
-      callback(results)
+      callback(items.group(results))
     end
   end
 
@@ -88,6 +88,18 @@ function M.collect(opts, callback)
       finish_client(client, err, result)
     end, bufnr)
   end
+end
+
+function M.capabilities(capabilities)
+  local result = capabilities and vim.deepcopy(capabilities) or vim.lsp.protocol.make_client_capabilities()
+
+  if type(result.experimental) ~= "table" then
+    result.experimental = {}
+  end
+
+  result.experimental.codeActionGroup = true
+
+  return result
 end
 
 local function execute_command(item, command, bufnr)

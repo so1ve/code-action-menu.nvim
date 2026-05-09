@@ -37,8 +37,15 @@ end
 
 function M.select(items, opts, on_select)
   local adapter = M.resolve(opts)
+  opts = opts or {}
 
-  return adapter.select(items, opts or {}, on_select)
+  return adapter.select(items, opts, function(item)
+    if item and item.is_group then
+      return M.select(item.children, vim.tbl_deep_extend("force", opts, { prompt = item.title }), on_select)
+    end
+
+    return on_select(item)
+  end)
 end
 
 return M

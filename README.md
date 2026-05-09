@@ -7,6 +7,7 @@ A small Neovim LSP code action picker
 - `require("code-action-menu").setup(opts)` and `require("code-action-menu").code_action(opts)`
 - Picker fallback order: `snacks` → `mini` → `native`
 - Only shows code actions that are available; disabled actions are hidden
+- Supports rust-analyzer grouped code actions when the client advertises `experimental.codeActionGroup`
 - Supports diff preview for Snacks picker only
 
 ## Requirements
@@ -57,6 +58,22 @@ require("code-action-menu").setup({
     fallback = "󰌵",
   },
 })
+```
+
+To receive rust-analyzer grouped code actions, merge the plugin capability into your LSP client capabilities before
+starting rust-analyzer:
+
+```lua
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities = require("code-action-menu").capabilities(capabilities)
+```
+
+If your LSP capabilities are built before your plugin manager has placed `code-action-menu.nvim` on `runtimepath`, set
+the equivalent flag directly instead:
+
+```lua
+capabilities.experimental = capabilities.experimental or {}
+capabilities.experimental.codeActionGroup = true
 ```
 
 `code_action()` accepts the same options for one call. It also accepts `bufnr`, `context`, and `only`:

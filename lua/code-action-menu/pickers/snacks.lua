@@ -172,6 +172,16 @@ end
 
 local function preview_item(ctx)
   local action_item = ctx.item.item
+
+  if action_item.is_group then
+    local lines = vim.tbl_map(function(child)
+      return child.title
+    end, action_item.children or {})
+
+    render_text_preview(ctx, action_item.title, lines)
+    return
+  end
+
   local action = action_item.action
 
   if action.edit then
