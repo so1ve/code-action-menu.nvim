@@ -92,3 +92,7 @@ Uses `require("mini.pick").start()` when available. Preview is not supported.
 ### native
 
 Uses `vim.ui.select` as the final fallback. Preview is not supported.
+
+## 📝 License
+
+[MIT](./LICENSE). Made with ❤️ by [Ray](https://github.com/so1ve)
