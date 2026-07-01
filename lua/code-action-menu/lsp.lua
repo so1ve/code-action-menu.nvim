@@ -24,7 +24,31 @@ end
 
 local function make_params(opts)
   local bufnr = opts.bufnr or vim.api.nvim_get_current_buf()
-  local range_params = vim.lsp.util.make_range_params(0, opts.offset_encoding or "utf-16")
+  local encoding = opts.offset_encoding or "utf-16"
+  local mode = vim.api.nvim_get_mode().mode
+  local range_params = vim.lsp.util.make_range_params(0, encoding)
+
+  if mode == "v" or mode == "V" then
+    local start = vim.fn.getpos("v")
+    local end_ = vim.fn.getpos(".")
+
+    if end_[2] < start[2] or (end_[2] == start[2] and end_[3] < start[3]) then
+      start, end_ = end_, start
+    end
+
+    if mode == "V" then
+      start[3] = 1
+      end_[3] = #vim.api.nvim_buf_get_lines(bufnr, end_[2] - 1, end_[2], true)[1]
+    end
+
+    range_params = vim.lsp.util.make_given_range_params(
+      { start[2], start[3] - 1 },
+      { end_[2], end_[3] - 1 },
+      bufnr,
+      encoding
+    )
+  end
+
   local diagnostics = vim.tbl_map(function(diagnostic)
     return diagnostic.user_data and diagnostic.user_data.lsp or diagnostic
   end, vim.diagnostic.get(bufnr, { lnum = range_params.range.start.line }))
