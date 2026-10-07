@@ -2,6 +2,11 @@
 
 A small Neovim LSP code action picker
 
+![Snacks code action picker showing example actions and a diff preview that changes a variable from let to const](assets/snacks-picker.png)
+
+Example code actions in the Snacks picker, with a diff preview of the selected edit.
+Diff previews are available with Snacks only.
+
 ## Features
 
 - `require("code-action-menu").setup(opts)` and `require("code-action-menu").code_action(opts)`
